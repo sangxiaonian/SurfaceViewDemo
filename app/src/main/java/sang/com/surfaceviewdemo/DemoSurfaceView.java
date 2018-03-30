@@ -40,25 +40,19 @@ public class DemoSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         mHeight = h;
     }
 
-    private boolean drawSurface(Canvas canvas) {
+    private void drawSurface(Canvas canvas) {
         final int w = mWidth;
         final int h = mHeight;
         if (w == 0 || h == 0) {
-            return true;
+            return ;
         }
-        boolean needDrawNextFrame = false;
         new WeatherDrawable(false,getContext()).setSize(w,h).draw(canvas);
-
-
-        return needDrawNextFrame;
     }
 
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
 
-
-        Log.i(TAG, "surfaceCreated");
     }
 
     @Override
