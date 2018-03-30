@@ -1,5 +1,7 @@
 package sang.com.weathermode;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -9,18 +11,20 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import sang.com.weathermode.drawable.WeatherDrawable;
+import sang.com.weathermode.weatherutils.ColorAnimation;
 
 /**
  * 作者： ${PING} on 2018/3/29.
  */
 
-public class WeatherView extends SurfaceView implements SurfaceHolder.Callback {
+public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, WeatherDrawable.onValueChangesListener {
 
     private String tag = "DemoSurfaceView";
 
 
     private int width;
     private int height;
+    private WeatherDrawable weatherDrawable;
 
 
     public WeatherView(Context context) {
@@ -37,7 +41,8 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback {
         SurfaceHolder mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setFormat(PixelFormat.RGBA_8888);
-
+        weatherDrawable = new WeatherDrawable(false, getContext());
+        weatherDrawable.setListener(this);
     }
 
 
@@ -56,32 +61,41 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Canvas canvas = getHolder().lockCanvas();
-        if (canvas != null) {
-            drawSomething(canvas);
-        }
+        drawSomething();
+
     }
 
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         getHolder().removeCallback(this);
-        Log.i(tag, "--------------surfaceDestroyed---------------");
     }
 
 
-    private void drawSomething(Canvas canvas) {
+    private void drawSomething() {
         //获得canvas对象
         //绘制背景
+        Canvas canvas = getHolder().lockCanvas();
+        if (canvas == null) {
+            return;
+        }
         final int w = width;
         final int h = height;
         if (w == 0 || h == 0) {
             return;
         }
-
-        new WeatherDrawable(false, getContext()).setSize(width, height).draw(canvas);
+        weatherDrawable.setSize(width, height).draw(canvas);
         getHolder().unlockCanvasAndPost(canvas);
+
     }
 
+    public void changeColorsWithAni(Integer[] colors) {
+        weatherDrawable.changToColorsWithAni(colors);
 
+    }
+
+    @Override
+    public void onValueChanges(float animatedFraction) {
+        drawSomething();
+    }
 }

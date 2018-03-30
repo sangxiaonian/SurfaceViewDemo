@@ -1,12 +1,14 @@
 package sang.com.weathermode.drawable;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 
-import sang.com.weathermode.R;
 import sang.com.weathermode.drawable.color.SkyBackground;
+import sang.com.weathermode.weatherutils.ColorAnimation;
+import sang.com.weathermode.weatherutils.WLog;
 
 /**
  * 作者： ${PING} on 2018/3/30.
@@ -18,29 +20,41 @@ public class WeatherDrawable {
     /**
      * 背景drawable
      */
-    protected Drawable skyBgDrawable;
+    protected GradientDrawable skyBgDrawable;
     protected boolean isNight;
     protected Context mContext;
 
+    private ValueAnimator valueAnimator;
+
+    private onValueChangesListener listener;
 
 
     public WeatherDrawable(boolean isNight, Context mContext) {
         this.isNight = isNight;
         this.mContext = mContext;
-        initDrawable();
+        init();
 
     }
 
-    protected Drawable initDrawable() {
+    private void init() {
         if (skyBgDrawable == null) {
             skyBgDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, getSkyBackColor());
-//            skyBgDrawable=mContext.getResources( ).getDrawable(R.drawable.sunny_d);
         }
-        return skyBgDrawable;
+        valueAnimator = ValueAnimator.ofObject(new ColorAnimation.ColorsTypeEvaluator(),SkyBackground.CLEAR_D.clone(), SkyBackground.CLEAR_D.clone());
+        valueAnimator.setDuration(260);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setColors((Integer[]) animation.getAnimatedValue());
+                if (listener != null) {
+                    listener.onValueChanges(animation.getAnimatedFraction());
+                }
+            }
+        });
+
     }
 
     public Drawable getDrawable() {
-
         return skyBgDrawable;
     }
 
@@ -59,9 +73,22 @@ public class WeatherDrawable {
         return this;
     }
 
+    public WeatherDrawable setColors(Integer[] colors) {
+        int[] color =new int[colors.length];
+        for (int i = 0; i < color.length; i++) {
+            color[i]=colors[i];
+        }
+        skyBgDrawable.setColors(color);
+        return this;
+    }
+
 
     public int[] getSkyBackColor() {
-        return isNight ? SkyBackground.CLEAR_N : SkyBackground.CLEAR_D;
+        Integer[] integers = isNight ? SkyBackground.CLEAR_N : SkyBackground.CLEAR_D;
+        int[] colors = new int[2];
+          colors[0] = integers[0];
+          colors[1] = integers[1];
+        return colors;
     }
 
     public void draw(Canvas mCanvas) {
@@ -70,42 +97,22 @@ public class WeatherDrawable {
         }
     }
 
+    public void changToColorsWithAni(Integer[] endColors) {
+        Integer[] values = (Integer[]) valueAnimator.getAnimatedValue();
+        if (values == null) {
+            values = SkyBackground.CLEAR_D.clone();
+        }
+        valueAnimator.setObjectValues(values.clone(), endColors.clone());
+        valueAnimator.start();
+    }
 
-    public int evaluate(float fraction, Integer startValue, Integer endValue) {
-        int startInt = (Integer) startValue;
-        float startA = ((startInt >> 24) & 0xff) / 255.0f;
-        float startR = ((startInt >> 16) & 0xff) / 255.0f;
-        float startG = ((startInt >> 8) & 0xff) / 255.0f;
-        float startB = (startInt & 0xff) / 255.0f;
 
-        int endInt = (Integer) endValue;
-        float endA = ((endInt >> 24) & 0xff) / 255.0f;
-        float endR = ((endInt >> 16) & 0xff) / 255.0f;
-        float endG = ((endInt >> 8) & 0xff) / 255.0f;
-        float endB = (endInt & 0xff) / 255.0f;
+    public void setListener(onValueChangesListener listener) {
+        this.listener = listener;
+    }
 
-        // convert from sRGB to linear
-        startR = (float) Math.pow(startR, 2.2);
-        startG = (float) Math.pow(startG, 2.2);
-        startB = (float) Math.pow(startB, 2.2);
-
-        endR = (float) Math.pow(endR, 2.2);
-        endG = (float) Math.pow(endG, 2.2);
-        endB = (float) Math.pow(endB, 2.2);
-
-        // compute the interpolated color in linear space
-        float a = startA + fraction * (endA - startA);
-        float r = startR + fraction * (endR - startR);
-        float g = startG + fraction * (endG - startG);
-        float b = startB + fraction * (endB - startB);
-
-        // convert back to sRGB in the [0..255] range
-        a = a * 255.0f;
-        r = (float) Math.pow(r, 1.0 / 2.2) * 255.0f;
-        g = (float) Math.pow(g, 1.0 / 2.2) * 255.0f;
-        b = (float) Math.pow(b, 1.0 / 2.2) * 255.0f;
-
-        return Math.round(a) << 24 | Math.round(r) << 16 | Math.round(g) << 8 | Math.round(b);
+    public interface onValueChangesListener {
+        void onValueChanges(float animatedFraction);
     }
 
 

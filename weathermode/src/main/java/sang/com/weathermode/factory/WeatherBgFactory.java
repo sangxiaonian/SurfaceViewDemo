@@ -1,12 +1,5 @@
 package sang.com.weathermode.factory;
 
-import android.animation.ArgbEvaluator;
-import android.content.Context;
-
-
-import sang.com.weathermode.drawable.SunnyDrawaber;
-import sang.com.weathermode.drawable.WeatherDrawable;
-
 
 /**
  * 作者： ${PING} on 2018/3/30.
