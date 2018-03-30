@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="sang.com.surfaceviewdemo.MainActivity">
+
+    <Button
+        android:layout_width="match_parent"
+        android:clickable="true"
+        android:id="@+id/bt_change"
+        android:layout_height="wrap_content" />
+
+    <sang.com.weathermode.WeatherView
+        android:id="@+id/weather"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1" />
+    <sang.com.surfaceviewdemo.DemoSurfaceView
+        android:id="@+id/demo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1" />
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1" />
+
+
+</LinearLayout>
