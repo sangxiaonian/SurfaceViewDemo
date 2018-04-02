@@ -9,6 +9,7 @@ import android.graphics.RadialGradient;
 import android.graphics.Shader;
 
 import sang.com.weathermode.drawable.WeatherConver;
+import sang.com.weathermode.weatherutils.WLog;
 import sang.com.weathermode.weatherutils.WUtils;
 
 
@@ -30,9 +31,9 @@ public class StarHolder extends BasicWeatherHolder {
         loaction = new Point((int) WUtils.randomFloat(0, this.width), (int) WUtils.randomFloat(0, height));
         lenth = (int) WUtils.randomFloat(WUtils.dip2px(mContext, lenth) / 2, WUtils.dip2px(mContext, lenth));
         if (loaction.y > height / 2) {
-            radialGradient = new RadialGradient(loaction.x + lenth / 2, loaction.y / 2, lenth / 2, Color.WHITE, WeatherConver.SkyBackground.CLEAR_N[1], Shader.TileMode.CLAMP);
+            radialGradient = new RadialGradient(loaction.x + lenth / 2, loaction.y+ lenth / 2, lenth / 2, Color.WHITE, WeatherConver.SkyBackground.CLEAR_N[1], Shader.TileMode.CLAMP);
         } else {
-            radialGradient = new RadialGradient(loaction.x + lenth / 2, loaction.y / 2, lenth / 2, Color.WHITE, WeatherConver.SkyBackground.CLEAR_N[0], Shader.TileMode.CLAMP);
+            radialGradient = new RadialGradient(loaction.x + lenth / 2, loaction.y+ lenth / 2, lenth / 2, Color.WHITE, WeatherConver.SkyBackground.CLEAR_N[0], Shader.TileMode.CLAMP);
         }
 
     }
@@ -46,7 +47,7 @@ public class StarHolder extends BasicWeatherHolder {
         mPaint.setAlpha(alaph);
         mPaint.setShader(radialGradient);
         canvas.save();
-        canvas.drawCircle(loaction.x + lenth / 2, loaction.y / 2, lenth / 2,mPaint);
+        canvas.drawCircle(loaction.x + lenth / 2, loaction.y + lenth / 2, lenth / 2,mPaint);
         canvas.restore();
         mPaint.setShader(null);
 

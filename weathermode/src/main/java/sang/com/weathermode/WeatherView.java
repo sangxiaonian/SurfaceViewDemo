@@ -93,7 +93,6 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
 
     public void changeColorsWithAni(Integer[] colors) {
         weatherDrawable.changToColorsWithAni(colors);
-        currentHolders = WeatherBgFactory.creatSnow(getContext(),100, width, height);
     }
 
     /**
@@ -140,6 +139,7 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
             return;
         }
         weatherDrawable.setSize(width, height).draw(canvas);
+        synchronized (WeatherView.class) {
             if (preHolders != null&&!preHolders.isEmpty()) {
                 holders.addAll(preHolders);
                 for (BasicWeatherHolder holder : holders) {
@@ -155,6 +155,7 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
                 holders.clear();
 
             }
+        }
         getHolder().unlockCanvasAndPost(canvas);
     }
 

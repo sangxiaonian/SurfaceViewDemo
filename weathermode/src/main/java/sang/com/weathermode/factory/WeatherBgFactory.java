@@ -20,7 +20,7 @@ import sang.com.weathermode.drawable.holder.StarHolder;
 public class WeatherBgFactory {
 
 
-    public static List<BasicWeatherHolder> creatWeatherHolder(WeatherConver.WeatherType type, Context mContext,   int width, int height) {
+    public static List<BasicWeatherHolder> creatWeatherHolder(WeatherConver.WeatherType type, Context mContext, int width, int height) {
         List<BasicWeatherHolder> weatherBgColor = null;
         switch (type) {
             //晴天
@@ -40,7 +40,7 @@ public class WeatherBgFactory {
             //下雪
             case SNOW_D:
             case SNOW_N:
-                weatherBgColor = creatRain(mContext, 100, width, height);
+                weatherBgColor = creatSnow(mContext, 100, width, height);
                 break;
             //多云
             case CLOUDY_D:
@@ -120,7 +120,7 @@ public class WeatherBgFactory {
     public static List<BasicWeatherHolder> creatRainAndSnow(Context context, int count, int width, int height) {
         List<BasicWeatherHolder> holders = new ArrayList<>();
         for (int i = 0; i < count / 2; i++) {
-            SnowHolder rainHolder = new SnowHolder(width, height, context);
+            RainHolder rainHolder = new RainHolder(width, height, context);
             holders.add(rainHolder);
             SnowHolder snowHolder = new SnowHolder(width, height, context);
             holders.add(snowHolder);
