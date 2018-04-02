@@ -1,6 +1,17 @@
 package sang.com.weathermode.factory;
 
 
+import android.content.Context;
+import android.graphics.Point;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import sang.com.weathermode.drawable.holder.BasicWeatherHolder;
+import sang.com.weathermode.drawable.holder.RainHolder;
+import sang.com.weathermode.drawable.holder.SnowHolder;
+import sang.com.weathermode.weatherutils.WUtils;
+
 /**
  * 作者： ${PING} on 2018/3/30.
  * 天气背景
@@ -8,10 +19,25 @@ package sang.com.weathermode.factory;
  */
 public   class WeatherBgFactory {
 
-    public enum WeatherType {
-        CLEAR_D, CLEAR_N, RAIN_D, RAIN_N, SNOW_D, SNOW_N, CLOUDY_D, CLOUDY_N,
-        OVERCAST_D, OVERCAST_N, FOG_D, FOG_N, HAZE_D, HAZE_N, SAND_D, SAND_N,
-        WIND_D, WIND_N, RAIN_SNOW_D, RAIN_SNOW_N, UNKNOWN_D, UNKNOWN_N
+
+
+
+
+    public static List<BasicWeatherHolder> creatRain(Context context,int count, int width, int height){
+        List<BasicWeatherHolder> rains = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            RainHolder rainHolder = new RainHolder(width,height,context);
+            rains.add(rainHolder);
+        }
+        return rains;
+    }
+    public static List<BasicWeatherHolder> creatSnow(Context context, int count, int width, int height){
+        List<BasicWeatherHolder> rains = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            SnowHolder rainHolder = new SnowHolder(width,height,context);
+            rains.add(rainHolder);
+        }
+        return rains;
     }
 
 }

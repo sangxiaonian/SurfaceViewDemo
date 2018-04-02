@@ -4,20 +4,28 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.List;
+
+import sang.com.weathermode.drawable.WeatherConver;
 import sang.com.weathermode.drawable.WeatherDrawable;
+import sang.com.weathermode.drawable.holder.BasicWeatherHolder;
+import sang.com.weathermode.drawable.holder.RainHolder;
+import sang.com.weathermode.factory.WeatherBgFactory;
 import sang.com.weathermode.weatherutils.ColorAnimation;
+import sang.com.weathermode.weatherutils.WLog;
 
 /**
  * 作者： ${PING} on 2018/3/29.
  */
 
-public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, WeatherDrawable.onValueChangesListener {
+public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, Runnable, WeatherDrawable.onValueChangesListener {
 
     private String tag = "DemoSurfaceView";
 
@@ -25,7 +33,11 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
     private int width;
     private int height;
     private WeatherDrawable weatherDrawable;
+    private List<BasicWeatherHolder> holders;
+    private Paint mPaint;
 
+    private Thread thread;
+    private boolean isDrawing;
 
     public WeatherView(Context context) {
         this(context, null);
@@ -37,12 +49,13 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
     }
 
     private void initView(Context context) {
-
         SurfaceHolder mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setFormat(PixelFormat.RGBA_8888);
         weatherDrawable = new WeatherDrawable(false, getContext());
         weatherDrawable.setListener(this);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     }
 
 
@@ -56,21 +69,42 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
+        isDrawing=true;
+        thread = new Thread(this);
+        thread.start();
+        WLog.i("-----surfaceCreated------");
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         drawSomething();
-
     }
 
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        getHolder().removeCallback(this);
+        isDrawing=false;
     }
 
+    public void changeColorsWithAni(Integer[] colors) {
+        weatherDrawable.changToColorsWithAni(colors);
+        holders = WeatherBgFactory.creatSnow(getContext(),100, width, height);
+    }
+
+    public void changeWeather(WeatherConver.WeatherType type) {
+        changeColorsWithAni(WeatherConver.creatSkyBackground(type));
+    }
+    @Override
+    public void onValueChanges(float animatedFraction) {
+//        if (holders!=null) {
+//            for (RainHolder holder : holders) {
+//                if (show) {
+//                    holder.alaph= (int) (holder.alaph*(1-animatedFraction));
+//                }
+//            }
+//
+//        }
+    }
 
     private void drawSomething() {
         //获得canvas对象
@@ -81,21 +115,26 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
         }
         final int w = width;
         final int h = height;
-        if (w == 0 || h == 0) {
-            return;
-        }
+//        if (w == 0 || h == 0) {
+//            return;
+//        }
+
         weatherDrawable.setSize(width, height).draw(canvas);
+
+        if (holders != null) {
+            for (BasicWeatherHolder holder : holders) {
+                holder.excuse(  canvas, mPaint);
+            }
+        }
         getHolder().unlockCanvasAndPost(canvas);
 
     }
 
-    public void changeColorsWithAni(Integer[] colors) {
-        weatherDrawable.changToColorsWithAni(colors);
-
-    }
 
     @Override
-    public void onValueChanges(float animatedFraction) {
-        drawSomething();
+    public void run() {
+        while (isDrawing) {
+            drawSomething();
+        }
     }
 }
