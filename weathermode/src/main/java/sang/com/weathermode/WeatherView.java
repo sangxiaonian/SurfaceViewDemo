@@ -6,11 +6,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sang.com.weathermode.drawable.WeatherConver;
@@ -30,14 +32,16 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
     private String tag = "DemoSurfaceView";
 
 
-    private int width;
-    private int height;
-    private WeatherDrawable weatherDrawable;
-    private List<BasicWeatherHolder> holders;
+    private int width;//控件宽高
+    private int height;//控件宽高
+    private WeatherDrawable weatherDrawable;//背景
+    private List<BasicWeatherHolder> currentHolders;//当前显示的天气状态装饰
+    private List<BasicWeatherHolder> preHolders;//前一个天气状况显示
     private Paint mPaint;
 
     private Thread thread;
-    private boolean isDrawing;
+    private boolean isDrawing;//是否正在绘制，false停止绘制，结束线程
+
 
     public WeatherView(Context context) {
         this(context, null);
@@ -56,6 +60,9 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
         weatherDrawable.setListener(this);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        currentHolders=new ArrayList<>();
+        preHolders=new ArrayList<>();
+
     }
 
 
@@ -72,14 +79,12 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
         isDrawing=true;
         thread = new Thread(this);
         thread.start();
-        WLog.i("-----surfaceCreated------");
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         drawSomething();
     }
-
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -88,46 +93,69 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
 
     public void changeColorsWithAni(Integer[] colors) {
         weatherDrawable.changToColorsWithAni(colors);
-        holders = WeatherBgFactory.creatSnow(getContext(),100, width, height);
+        currentHolders = WeatherBgFactory.creatSnow(getContext(),100, width, height);
     }
 
+    /**
+     * 切换天气
+     * @param type
+     */
     public void changeWeather(WeatherConver.WeatherType type) {
+        preHolders.clear();
+        preHolders.addAll(currentHolders);
+        currentHolders.clear();
+        List<BasicWeatherHolder> holders = WeatherBgFactory.creatWeatherHolder(type,getContext(), width, height);
+        if (holders!=null) {
+            currentHolders.addAll(holders);
+        }
+
         changeColorsWithAni(WeatherConver.creatSkyBackground(type));
+
+
     }
     @Override
     public void onValueChanges(float animatedFraction) {
-//        if (holders!=null) {
-//            for (RainHolder holder : holders) {
-//                if (show) {
-//                    holder.alaph= (int) (holder.alaph*(1-animatedFraction));
-//                }
-//            }
-//
-//        }
+        if (animatedFraction>0.9){
+            preHolders.clear();
+        }
+        for (BasicWeatherHolder preHolder : preHolders) {
+            preHolder.setAnimatedFraction(1-animatedFraction);
+        }
+
+        for (BasicWeatherHolder currentHolder : currentHolders) {
+            currentHolder.setAnimatedFraction( animatedFraction);
+        }
     }
 
+
+    List<BasicWeatherHolder> holders = new ArrayList<>();
     private void drawSomething() {
         //获得canvas对象
         //绘制背景
         Canvas canvas = getHolder().lockCanvas();
-        if (canvas == null) {
-            return;
-        }
         final int w = width;
         final int h = height;
-//        if (w == 0 || h == 0) {
-//            return;
-//        }
-
-        weatherDrawable.setSize(width, height).draw(canvas);
-
-        if (holders != null) {
-            for (BasicWeatherHolder holder : holders) {
-                holder.excuse(  canvas, mPaint);
-            }
+        if (w == 0 || h == 0||canvas == null) {
+            WLog.i(w+">>"+h+">>>"+canvas);
+            return;
         }
-        getHolder().unlockCanvasAndPost(canvas);
+        weatherDrawable.setSize(width, height).draw(canvas);
+            if (preHolders != null&&!preHolders.isEmpty()) {
+                holders.addAll(preHolders);
+                for (BasicWeatherHolder holder : holders) {
+                    holder.excuse(canvas, mPaint);
+                }
+                holders.clear();
+            }
+            if (currentHolders != null&&!currentHolders.isEmpty()) {
+                holders.addAll(currentHolders);
+                for (BasicWeatherHolder holder : holders) {
+                    holder.excuse(canvas, mPaint);
+                }
+                holders.clear();
 
+            }
+        getHolder().unlockCanvasAndPost(canvas);
     }
 
 

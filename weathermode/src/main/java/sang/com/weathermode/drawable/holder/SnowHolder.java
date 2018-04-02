@@ -24,10 +24,6 @@ public class SnowHolder extends BasicWeatherHolder {
 
 
     private final VectorDrawable drawable;
-    /**
-     * 雨滴透明度
-     */
-    public int alaph = 255;
 
     /**
      * 雨滴长度
@@ -40,7 +36,8 @@ public class SnowHolder extends BasicWeatherHolder {
 
     public SnowHolder(float width, float height, Context mContext) {
         super(width, height, mContext);
-        alaph = (int) WUtils.randomFloat(50, 255);
+        startAlaph = (int) WUtils.randomFloat(50, 255);
+        alaph = startAlaph;
         loaction = new Point((int) WUtils.randomFloat(0, this.width), (int) WUtils.randomFloat(-height, height));
         lenth = (int) WUtils.randomFloat(WUtils.dip2px(mContext, lenth) / 2, WUtils.dip2px(mContext, lenth));
         speach = WUtils.dip2px(mContext, speach);

@@ -10,13 +10,25 @@ import android.graphics.Point;
  */
 
 public abstract class BasicWeatherHolder {
-    protected float width;
-    protected float height;
+    protected float width;//天气控件宽高
+    protected float height;//天气控件宽高
     protected Context mContext;
     /**
-     * 雨滴位置
+     * 装饰品位置
      */
-    public Point loaction;
+    public Point loaction;//装饰品的位置
+
+    protected int startAlaph=255;
+
+    /**
+     * 装饰品透明度
+     */
+    public int alaph = 255;
+
+    /**
+     * 动画转变过程的透明度(0-1)
+     */
+    protected float animatedFraction = 1;
 
     public BasicWeatherHolder(float width, float height, Context mContext) {
         this.width = width;
@@ -25,4 +37,9 @@ public abstract class BasicWeatherHolder {
     }
 
     public abstract void excuse(Canvas canvas, Paint mPaint);
+
+    public void setAnimatedFraction(float animatedFraction) {
+        this.animatedFraction = animatedFraction;
+        alaph= (int) (startAlaph*animatedFraction);
+    }
 }

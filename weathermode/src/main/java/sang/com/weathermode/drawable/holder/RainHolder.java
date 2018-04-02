@@ -17,10 +17,7 @@ import sang.com.weathermode.weatherutils.WUtils;
 public class RainHolder extends BasicWeatherHolder{
 
 
-    /**
-     * 雨滴透明度
-     */
-    public int alaph = 255;
+
 
     /**
      * 雨滴长度
@@ -32,7 +29,8 @@ public class RainHolder extends BasicWeatherHolder{
 
     public RainHolder(float width, float height, Context mContext) {
         super(width, height, mContext);
-        alaph = (int) WUtils.randomFloat(50, 255);
+        startAlaph = (int) WUtils.randomFloat(50, 255);
+        alaph = startAlaph;
         loaction = new Point((int) WUtils.randomFloat(0, this.width), (int) WUtils.randomFloat(-height, height));
     }
 
@@ -43,7 +41,7 @@ public class RainHolder extends BasicWeatherHolder{
         }
 
         mPaint.setColor(Color.WHITE);
-        mPaint.setAlpha(alaph);
+        mPaint.setAlpha(alaph );
         mPaint.setStrokeWidth(WUtils.dip2px(mContext, 2));
         canvas.save();
         canvas.drawLine(loaction.x, loaction.y, loaction.x, loaction.y + WUtils.dip2px(mContext, lenth), mPaint);
