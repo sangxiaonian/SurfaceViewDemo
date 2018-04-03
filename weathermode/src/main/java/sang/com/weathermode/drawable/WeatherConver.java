@@ -103,7 +103,6 @@ public class WeatherConver {
             case HAZE_N:
                 weatherBgColor = SkyBackground.HAZE_N;
                 break;
-
             //风沙
             case SAND_D:
                 weatherBgColor = SkyBackground.SAND_D;
@@ -111,7 +110,6 @@ public class WeatherConver {
             case SAND_N:
                 weatherBgColor = SkyBackground.SAND_N;
                 break;
-
                 //大风
             case WIND_D:
                 weatherBgColor = SkyBackground.RAIN_D;
@@ -130,13 +128,13 @@ public class WeatherConver {
 
                 //未知天气
             case UNKNOWN_D:
-                weatherBgColor = SkyBackground.CLEAR_N;
+                weatherBgColor = SkyBackground.CLEAR_D;
                 break;
             case UNKNOWN_N:
                 weatherBgColor = SkyBackground.CLEAR_N;
                 break;
             default:
-                weatherBgColor = SkyBackground.CLEAR_N;
+                weatherBgColor = SkyBackground.CLEAR_D;
         }
         return weatherBgColor;
     }

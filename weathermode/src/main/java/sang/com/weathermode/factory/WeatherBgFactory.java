@@ -8,9 +8,14 @@ import java.util.List;
 
 import sang.com.weathermode.drawable.WeatherConver;
 import sang.com.weathermode.drawable.holder.BasicWeatherHolder;
+import sang.com.weathermode.drawable.holder.CloudHolder;
+import sang.com.weathermode.drawable.holder.FogHolder;
+import sang.com.weathermode.drawable.holder.HazeHolder;
 import sang.com.weathermode.drawable.holder.RainHolder;
 import sang.com.weathermode.drawable.holder.SnowHolder;
 import sang.com.weathermode.drawable.holder.StarHolder;
+import sang.com.weathermode.drawable.holder.SunnyHolder;
+import sang.com.weathermode.drawable.holder.WindHolder;
 
 
 /**
@@ -25,7 +30,7 @@ public class WeatherBgFactory {
         switch (type) {
             //晴天
             case CLEAR_D:
-//                weatherBgColor = creatSnow(mContext, count, width, height);
+                weatherBgColor = creatSunny(mContext, 1, width, height);
                 break;
             case CLEAR_N:
                 weatherBgColor = creatStar(mContext, 100, width, height);
@@ -45,47 +50,49 @@ public class WeatherBgFactory {
             //多云
             case CLOUDY_D:
             case CLOUDY_N:
-                weatherBgColor = creatStar(mContext, 100, width, height);
+                weatherBgColor = creatCloud(mContext, 1, width, height);
                 break;
             //阴天
             case OVERCAST_D:
 
             case OVERCAST_N:
-                weatherBgColor = creatStar(mContext, 100, width, height);
+                weatherBgColor = creatCloud(mContext, 1, width, height);
                 break;
             //大雾
             case FOG_D:
-
+                weatherBgColor = creatFog(false, mContext, 100, width, height);
+                break;
             case FOG_N:
-                weatherBgColor = creatStar(mContext, 100, width, height);
+                weatherBgColor = creatFog(true, mContext, 100, width, height);
                 break;
             //雾霾
             case HAZE_D:
-
+                weatherBgColor = creatHaze(false, mContext, 100, width, height);
+                break;
             case HAZE_N:
-                weatherBgColor = creatStar(mContext, 100, width, height);
+                weatherBgColor = creatHaze(true, mContext, 100, width, height);
                 break;
 
             //风沙
             case SAND_D:
+                weatherBgColor = creatSundAndWind(false,mContext, 100, width, height);
                 break;
             case SAND_N:
-                weatherBgColor = creatStar(mContext, 100, width, height);
+                weatherBgColor = creatSundAndWind(true,mContext, 100, width, height);
                 break;
 
             //大风
             case WIND_D:
-
+                weatherBgColor = creatWind(false, mContext, 100, width, height);
+                break;
             case WIND_N:
-                weatherBgColor = creatStar(mContext, 100, width, height);
+                weatherBgColor = creatWind(true, mContext, 100, width, height);
                 break;
 
             //雨夹雪
             case RAIN_SNOW_D:
-
             case RAIN_SNOW_N:
                 weatherBgColor = creatRainAndSnow(mContext, 100, width, height);
-
                 break;
 
             //未知天气
@@ -133,6 +140,63 @@ public class WeatherBgFactory {
         for (int i = 0; i < count; i++) {
             StarHolder rainHolder = new StarHolder(width, height, context);
             holders.add(rainHolder);
+        }
+        return holders;
+    }
+
+
+
+    public static List<BasicWeatherHolder> creatCloud(Context context, int count, int width, int height) {
+        List<BasicWeatherHolder> holders = new ArrayList<>();
+        CloudHolder rainHolder1 = new CloudHolder(width, height, context);
+        CloudHolder rainHolder = new CloudHolder(width, height, context);
+        holders.add(rainHolder1);
+        holders.add(rainHolder);
+        return holders;
+    }
+
+
+    public static List<BasicWeatherHolder> creatSunny(Context context, int count, int width, int height) {
+        List<BasicWeatherHolder> holders = new ArrayList<>();
+        SunnyHolder sunnyHolder = new SunnyHolder(width, height, context);
+        holders.add(sunnyHolder);
+        return holders;
+    }
+
+    public static List<BasicWeatherHolder> creatHaze(boolean isNight, Context context, int count, int width, int height) {
+        List<BasicWeatherHolder> holders = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            HazeHolder hazeHolder = new HazeHolder(isNight,width, height, context);
+            holders.add(hazeHolder);
+        }
+        return holders;
+    }public static List<BasicWeatherHolder> creatSundAndWind(boolean isNight, Context context, int count, int width, int height) {
+        List<BasicWeatherHolder> holders = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            HazeHolder hazeHolder = new HazeHolder(isNight,width, height, context);
+            WindHolder windHolder = new WindHolder(isNight,width, height, context);
+            holders.add(windHolder);
+            holders.add(hazeHolder);
+        }
+        return holders;
+    }
+
+
+
+    public static List<BasicWeatherHolder> creatFog(boolean isNight, Context context, int count, int width, int height) {
+        List<BasicWeatherHolder> holders = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            FogHolder hazeHolder = new FogHolder(isNight,width, height, context);
+            holders.add(hazeHolder);
+        }
+        return holders;
+    }
+
+    public static List<BasicWeatherHolder> creatWind(boolean isNight, Context context, int count, int width, int height) {
+        List<BasicWeatherHolder> holders = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            WindHolder hazeHolder = new WindHolder(isNight,width, height, context);
+            holders.add(hazeHolder);
         }
         return holders;
     }

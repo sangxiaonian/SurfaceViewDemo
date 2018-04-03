@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 
+import sang.com.weathermode.weatherutils.WLog;
 import sang.com.weathermode.weatherutils.WUtils;
 
 /**
@@ -25,11 +26,11 @@ public class RainHolder extends BasicWeatherHolder{
 
     public int lenth = 10;
 
-    public int speach = (int) WUtils.randomFloat(20, 30);
+    public int speach = (int) WUtils.randomFloat(40, 50);
 
     public RainHolder(float width, float height, Context mContext) {
         super(width, height, mContext);
-        startAlaph = (int) WUtils.randomFloat(50, 255);
+        startAlaph = (int) WUtils.randomFloat(50, 180);
         alaph = startAlaph;
         loaction = new Point((int) WUtils.randomFloat(0, this.width), (int) WUtils.randomFloat(-height, height));
     }
@@ -39,9 +40,9 @@ public class RainHolder extends BasicWeatherHolder{
         if (loaction == null) {
             return;
         }
-
+        mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.WHITE);
-        mPaint.setAlpha(alaph );
+        mPaint.setAlpha(alaph);
         mPaint.setStrokeWidth(WUtils.dip2px(mContext, 2));
         canvas.save();
         canvas.drawLine(loaction.x, loaction.y, loaction.x, loaction.y + WUtils.dip2px(mContext, lenth), mPaint);

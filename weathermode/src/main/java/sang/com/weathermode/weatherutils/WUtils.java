@@ -41,6 +41,19 @@ public class WUtils {
         }
         return random.nextFloat()*(max-min) + min;
     }
+    /**
+     * 获取指定范围的随机数
+     * @param min
+     * @param max
+     * @return
+     */
+    public static int randomInt(int min, int max){
+        Random random = new Random();
+        if (min>=max){
+            throw new ParamsError("max must greater than min");
+        }
+        return random.nextInt(max-min) + min;
+    }
 
 
 

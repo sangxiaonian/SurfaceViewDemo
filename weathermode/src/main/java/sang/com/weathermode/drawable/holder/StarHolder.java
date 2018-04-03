@@ -22,7 +22,7 @@ public class StarHolder extends BasicWeatherHolder {
 
     private RadialGradient radialGradient;
     private int lenth = 5;
-
+    private int speach;
 
     public StarHolder(float width, float height, Context mContext) {
         super(width, height, mContext);
@@ -30,24 +30,25 @@ public class StarHolder extends BasicWeatherHolder {
         alaph = startAlaph;
         loaction = new Point((int) WUtils.randomFloat(0, this.width), (int) WUtils.randomFloat(0, height));
         lenth = (int) WUtils.randomFloat(WUtils.dip2px(mContext, lenth) / 2, WUtils.dip2px(mContext, lenth));
-        if (loaction.y > height / 2) {
-            radialGradient = new RadialGradient(loaction.x + lenth / 2, loaction.y+ lenth / 2, lenth / 2, Color.WHITE, WeatherConver.SkyBackground.CLEAR_N[1], Shader.TileMode.CLAMP);
-        } else {
-            radialGradient = new RadialGradient(loaction.x + lenth / 2, loaction.y+ lenth / 2, lenth / 2, Color.WHITE, WeatherConver.SkyBackground.CLEAR_N[0], Shader.TileMode.CLAMP);
-        }
 
+        radialGradient = new RadialGradient(loaction.x + lenth / 2, loaction.y + lenth / 2, lenth / 2, Color.WHITE, Color.TRANSPARENT, Shader.TileMode.CLAMP);
+        speach = (int) WUtils.randomFloat(0, 360);
     }
 
     @Override
     public void excuse(Canvas canvas, Paint mPaint) {
-        if (loaction == null||alaph==0) {
+        if (loaction == null || alaph == 0) {
             return;
         }
+        mPaint.setStyle(Paint.Style.FILL);
+        speach = speach >= 360 ? 0 : (speach + 2);
         mPaint.setColor(Color.WHITE);
-        mPaint.setAlpha(alaph);
+        double v1 = Math.sin(speach * Math.PI / 180) / 2 + 0.5f;
+        int v = (int) (alaph * (v1));
+        mPaint.setAlpha(v);
         mPaint.setShader(radialGradient);
         canvas.save();
-        canvas.drawCircle(loaction.x + lenth / 2, loaction.y + lenth / 2, lenth / 2,mPaint);
+        canvas.drawCircle(loaction.x + lenth / 2, loaction.y + lenth / 2, lenth / 2, mPaint);
         canvas.restore();
         mPaint.setShader(null);
 

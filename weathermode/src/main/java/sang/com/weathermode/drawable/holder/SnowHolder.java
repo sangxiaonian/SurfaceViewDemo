@@ -49,7 +49,7 @@ public class SnowHolder extends BasicWeatherHolder {
     public void excuse(Canvas canvas, Paint mPaint) {
         if (loaction == null) {
             return;
-        }
+        }mPaint.setStyle(Paint.Style.FILL);
         canvas.save();
         drawable.setBounds(loaction.x, loaction.y, loaction.x + lenth, loaction.y + lenth);
         drawable.draw(canvas);
