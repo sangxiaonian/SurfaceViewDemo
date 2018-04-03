@@ -1,11 +1,18 @@
 package sang.com.surfaceviewdemo;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +24,31 @@ import sang.com.weathermode.fragment.WeatherFragment;
 public class MainActivity extends AppCompatActivity {
     WeatherView weatherView;
     ViewPager vp;
-
+    /**
+     * 使状态栏透明
+     * <p>
+     * 适用于图片作为背景的界面,此时需要图片填充到状态栏
+     *
+     * @param activity 需要设置的activity
+     */
+    public void setTranslucent(Activity activity) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar!=null) {
+            actionBar.hide();
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTranslucent(this);
         weatherView = findViewById(R.id.weather);
         vp = findViewById(R.id.vp);
         final WeatherAdapter weatherAdapter = new WeatherAdapter(getSupportFragmentManager(), creatDatas());

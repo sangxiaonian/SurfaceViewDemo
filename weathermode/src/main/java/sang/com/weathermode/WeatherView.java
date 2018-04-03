@@ -135,7 +135,6 @@ public class WeatherView extends SurfaceView implements SurfaceHolder.Callback, 
         final int w = width;
         final int h = height;
         if (w == 0 || h == 0||canvas == null) {
-            WLog.i(w+">>"+h+">>>"+canvas);
             return;
         }
         weatherDrawable.setSize(width, height).draw(canvas);
